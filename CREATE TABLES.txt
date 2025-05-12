@@ -1,0 +1,81 @@
+CREATE TABLE Patients (
+    PatientID INT IDENTITY(1,1) PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Phone VARCHAR(15),
+    DateOfBirth DATE,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Employee (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    salary DECIMAL(10,2),
+    address NVARCHAR(MAX),
+    sex NVARCHAR(10),
+    history NVARCHAR(MAX),
+    Specialty VARCHAR(100),
+    name NVARCHAR(100)
+);
+
+CREATE TABLE Doctors (
+    DoctorID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL UNIQUE,
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Nurse (
+    NurseID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL UNIQUE,
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Receptionist (
+    ReceptionistID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL UNIQUE,
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Appointments (
+    AppointmentID INT IDENTITY(1,1) PRIMARY KEY,
+    PatientID INT NOT NULL,
+    DoctorID INT NOT NULL,
+    RoomID INT NOT NULL,
+    AppointmentDate DATETIME NOT NULL,
+    Status VARCHAR(50) DEFAULT 'Scheduled' CHECK (Status IN ('Scheduled', 'Completed', 'Cancelled')),
+    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID) ON DELETE CASCADE,
+    FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID) ON DELETE CASCADE,
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID) ON DELETE CASCADE
+);
+
+CREATE TABLE Rooms (
+    RoomID INT IDENTITY(1,1) PRIMARY KEY,
+    room_type NVARCHAR(50),
+    period TIME
+);
+
+CREATE TABLE Medicine (
+    MedicineID INT IDENTITY(1,1) PRIMARY KEY,
+    bill DECIMAL(10,2),
+    quantity INT,
+    price DECIMAL(10,2),
+    code NVARCHAR(20)
+);
+
+CREATE TABLE Treatments (
+    TreatmentID INT IDENTITY(1,1) PRIMARY KEY,
+    AppointmentID INT NOT NULL UNIQUE,
+    MedicineID INT NOT NULL,
+    Description TEXT,
+    Cost DECIMAL(10,2),
+    FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID),
+    FOREIGN KEY (MedicineID) REFERENCES Medicine(MedicineID)
+);
+
+CREATE TABLE Payments (
+    PaymentID INT IDENTITY(1,1) PRIMARY KEY,
+    AppointmentID INT NOT NULL UNIQUE,
+    PaymentDate DATETIME DEFAULT GETDATE(),
+    Amount DECIMAL(10,2) NOT NULL,
+    PaymentMethod VARCHAR(50) NOT NULL,
+    FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID)
+);
