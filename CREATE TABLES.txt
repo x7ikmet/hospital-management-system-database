@@ -35,6 +35,12 @@ CREATE TABLE Receptionist (
     FOREIGN KEY (EmployeeID) REFERENCES Employee(ID) ON DELETE CASCADE
 );
 
+CREATE TABLE Rooms (
+    RoomID INT IDENTITY(1,1) PRIMARY KEY,
+    room_type NVARCHAR(50),
+    period TIME
+);
+
 CREATE TABLE Appointments (
     AppointmentID INT IDENTITY(1,1) PRIMARY KEY,
     PatientID INT NOT NULL,
@@ -47,11 +53,6 @@ CREATE TABLE Appointments (
     FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID) ON DELETE CASCADE
 );
 
-CREATE TABLE Rooms (
-    RoomID INT IDENTITY(1,1) PRIMARY KEY,
-    room_type NVARCHAR(50),
-    period TIME
-);
 
 CREATE TABLE Medicine (
     MedicineID INT IDENTITY(1,1) PRIMARY KEY,
